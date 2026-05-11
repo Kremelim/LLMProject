@@ -7,6 +7,7 @@ from typing import Any
 import psycopg
 from dotenv import load_dotenv
 from psycopg.rows import dict_row
+from psycopg.types.json import Jsonb
 
 load_dotenv()
 
@@ -328,8 +329,84 @@ def createActivity(
     learning_objectives: list[str],
     activity_no_optional: int | None = None
 ) -> dict[str, object]:
-    return _error("Not implemented yet")
+    try:
+        instructor = require_instructor(email, password)
+        require_course_access(instructor["email"], course_id, "instructor")
 
+        if not course_id or not course_id.strip():
+            return _error("Course ID is required")
+
+        if not activity_text or not activity_text.strip():
+            return _error("Activity text is required")
+
+        if not learning_objectives or not isinstance(learning_objectives, list):
+            return _error("At least one learning objective is required")
+
+        cleaned_objectives = [
+            objective.strip()
+            for objective in learning_objectives
+            if isinstance(objective, str) and objective.strip()
+        ]
+
+        if not cleaned_objectives:
+            return _error("At least one non-empty learning objective is required")
+
+        with _connect() as conn:
+            with conn.cursor() as cur:
+                if activity_no_optional is None:
+                    cur.execute(
+                        """
+                        select coalesce(max(activity_no), 0) + 1 as next_activity_no
+                        from public.activities
+                        where course_id = %s
+                        """,
+                        (course_id,),
+                    )
+                    row = cur.fetchone()
+                    activity_no = row["next_activity_no"]
+                else:
+                    activity_no = activity_no_optional
+
+                cur.execute(
+                    """
+                    select 1
+                    from public.activities
+                    where course_id = %s
+                      and activity_no = %s
+                    limit 1
+                    """,
+                    (course_id, activity_no),
+                )
+
+                if cur.fetchone():
+                    return _error("Duplicate activity number in this course")
+
+                cur.execute(
+                    """
+                    insert into public.activities
+                        (course_id, activity_no, activity_text, learning_objectives, status)
+                    values
+                        (%s, %s, %s, %s, 'NOT_STARTED')
+                    returning id, course_id, activity_no, activity_text, learning_objectives, status, created_at, updated_at
+                    """,
+                    (
+                        course_id,
+                        activity_no,
+                        activity_text.strip(),
+                        Jsonb(cleaned_objectives),
+                    ),
+                )
+
+                activity = cur.fetchone()
+
+            conn.commit()
+
+        return _success(activity=activity)
+
+    except PermissionError as exc:
+        return _error(str(exc))
+    except ValueError as exc:
+        return _error(str(exc))
 
 def updateActivity(email: str, password: str, course_id: str, activity_no: int, patch: dict) -> dict:
     return _error("Not implemented yet")
