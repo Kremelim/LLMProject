@@ -1,0 +1,7 @@
+﻿Timestamp,Sprint,Item ID,Change Type,From State,To State,Reason,Impact on Sprint Goal,Decision Owner,ClickUp Link,GitHub Link
+2026-05-11 22:00,Sprint 2,US-G,Status transition,Backlog,To Do,Selected for Sprint 2 because activity update is required after Sprint 1 create/list flow,No impact - Sprint 2 planned,Kerem Ataç,,
+2026-05-11 22:05,Sprint 2,US-J,Status transition,Backlog,To Do,Selected for Sprint 2 because tutoring flow depends on Sprint 1 active activity access,No impact - Sprint 2 planned,Kerem Ataç,,
+2026-05-11 22:10,Sprint 2,US-K,Status transition,Backlog,To Do,Selected for Sprint 2 because objective scoring depends on tutoring and progress state,No impact - Sprint 2 planned,Kerem Ataç,,
+2026-05-11 22:15,Sprint 2,US-L,Status transition,Backlog,To Do,Selected for Sprint 2 as exception handling after core scoring,No impact - Sprint 2 planned,Kerem Ataç,,
+2026-05-11 22:20,Sprint 2,US-M,Status transition,Backlog,To Do,Selected for Sprint 2 because reset depends on progress and score logs,No impact - Sprint 2 planned,Kerem Ataç,,
+2026-05-11 22:25,Sprint 2,EXPORT,Status transition,Backlog,To Do,Selected for Sprint 2 because instructors need score export after scoring implementation,No impact - Sprint 2 planned,Kerem Ataç,,
