@@ -30,3 +30,4 @@ TSK-68,US-M,Test reset blocks new score logs,Kerem Ataç,0.75,Done,feature/US-M-
 TSK-69,EXPORT,Implement exportScores(),Kerem Ataç,1,Done,feature/export-scores,,
 TSK-70,EXPORT,Generate CSV string or file path,Kerem Ataç,1,Done,feature/export-scores,,
 TSK-71,EXPORT,Test exported columns,Kerem Ataç,1,Done,feature/export-scores,,
+TSK-72,TECH,Implement password change and student password reset API helpers,Kerem Ataç,1,Done,feature/password-management,,Covers changeStudentPassword changeInstructorPassword and resetStudentPassword

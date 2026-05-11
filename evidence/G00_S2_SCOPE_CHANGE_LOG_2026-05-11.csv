@@ -36,3 +36,6 @@
 2026-05-12 03:30,Sprint 2,TSK-69,Status transition,To Do,Done,exportScores() was implemented with instructor authorization and score log retrieval,No impact - export work on track,Kerem Ataç,,PR link later
 2026-05-12 03:40,Sprint 2,TSK-70,Status transition,To Do,Done,exportScores() now generates CSV content with score log rows and filename metadata,No impact - verifies CSV generation behavior,Kerem Ataç,,PR link later
 2026-05-12 03:50,Sprint 2,TSK-71,Status transition,To Do,Done,export score column and route tests were added and pytest passed locally,No impact - completes export score testing evidence,Kerem Ataç,,PR link later
+2026-05-12 04:00,Sprint 2,TSK-72,Task add,,To Do,Password change and reset helpers were still skeleton functions and needed implementation before final API completion,Uses Sprint 2 buffer and improves API completeness,Kerem Ataç,,PR link later
+2026-05-12 04:10,Sprint 2,TSK-72,Status transition,To Do,In Progress,Started implementing password change and student password reset functions,No negative impact - small technical completion task,Kerem Ataç,,PR link later
+2026-05-12 04:30,Sprint 2,TSK-72,Status transition,In Progress,Done,changeStudentPassword changeInstructorPassword and resetStudentPassword were implemented with routes and tests,No negative impact - API contract now complete,Kerem Ataç,,PR link later
