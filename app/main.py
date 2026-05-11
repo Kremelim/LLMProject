@@ -23,6 +23,13 @@ class CreateActivityRequest(BaseModel):
     learning_objectives: list[str]
     activity_no_optional: int | None = None
 
+class ActivityStateRequest(BaseModel):
+    email: str
+    password: str
+    course_id: str
+    activity_no: int
+
+
 @app.get("/")
 def root() -> dict:
     return {
@@ -63,4 +70,23 @@ def instructor_create_activity(payload: CreateActivityRequest) -> dict:
         payload.activity_text,
         payload.learning_objectives,
         payload.activity_no_optional,
+    )
+
+@app.post("/instructor/activity/start")
+def instructor_start_activity(payload: ActivityStateRequest) -> dict:
+    return services.startActivity(
+        payload.email,
+        payload.password,
+        payload.course_id,
+        payload.activity_no,
+    )
+
+
+@app.post("/instructor/activity/end")
+def instructor_end_activity(payload: ActivityStateRequest) -> dict:
+    return services.endActivity(
+        payload.email,
+        payload.password,
+        payload.course_id,
+        payload.activity_no,
     )

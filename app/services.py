@@ -248,8 +248,57 @@ def getActivity(email: str, password: str, course_id: str, activity_no: int) -> 
 
 
 def logScore(email: str, password: str, course_id: str, activity_no: int, score: float, meta: str | None = None) -> dict:
-    return _error("Not implemented yet")
+    try:
+        student = require_student(email, password)
+        require_course_access(student["email"], course_id, "student")
 
+        with _connect() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    select status
+                    from public.activities
+                    where course_id = %s
+                      and activity_no = %s
+                    """,
+                    (course_id, activity_no),
+                )
+                activity = cur.fetchone()
+
+                if not activity:
+                    return _error("Activity not found")
+
+                if activity["status"] == "ENDED":
+                    return _error("Cannot log score for ENDED activity")
+
+                cur.execute(
+                    """
+                    insert into public.score_logs
+                        (student_email, course_id, activity_no, score_delta, new_total_score, event_type, meta)
+                    values
+                        (%s, %s, %s, %s, %s, %s, %s)
+                    returning id, student_email, course_id, activity_no, score_delta, new_total_score, event_type, meta, created_at
+                    """,
+                    (
+                        student["email"],
+                        course_id,
+                        activity_no,
+                        score,
+                        score,
+                        "AUTO",
+                        meta,
+                    ),
+                )
+                score_log = cur.fetchone()
+
+            conn.commit()
+
+        return _success(score_log=score_log)
+
+    except PermissionError as exc:
+        return _error(str(exc))
+    except ValueError as exc:
+        return _error(str(exc))
 
 # Instructor APIs
 
@@ -413,12 +462,68 @@ def updateActivity(email: str, password: str, course_id: str, activity_no: int, 
 
 
 def startActivity(email: str, password: str, course_id: str, activity_no: int) -> dict:
-    return _error("Not implemented yet")
+    try:
+        instructor = require_instructor(email, password)
+        require_course_access(instructor["email"], course_id, "instructor")
 
+        with _connect() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    update public.activities
+                    set status = 'ACTIVE',
+                        updated_at = now()
+                    where course_id = %s
+                      and activity_no = %s
+                    returning id, course_id, activity_no, activity_text, status, created_at, updated_at
+                    """,
+                    (course_id, activity_no),
+                )
+                activity = cur.fetchone()
+
+                if not activity:
+                    return _error("Activity not found")
+
+            conn.commit()
+
+        return _success(activity=activity)
+
+    except PermissionError as exc:
+        return _error(str(exc))
+    except ValueError as exc:
+        return _error(str(exc))
 
 def endActivity(email: str, password: str, course_id: str, activity_no: int) -> dict:
-    return _error("Not implemented yet")
+    try:
+        instructor = require_instructor(email, password)
+        require_course_access(instructor["email"], course_id, "instructor")
 
+        with _connect() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    update public.activities
+                    set status = 'ENDED',
+                        updated_at = now()
+                    where course_id = %s
+                      and activity_no = %s
+                    returning id, course_id, activity_no, activity_text, status, created_at, updated_at
+                    """,
+                    (course_id, activity_no),
+                )
+                activity = cur.fetchone()
+
+                if not activity:
+                    return _error("Activity not found")
+
+            conn.commit()
+
+        return _success(activity=activity)
+
+    except PermissionError as exc:
+        return _error(str(exc))
+    except ValueError as exc:
+        return _error(str(exc))
 
 def exportScores(email: str, password: str, course_id: str, activity_no: int) -> dict:
     return _error("Not implemented yet")
