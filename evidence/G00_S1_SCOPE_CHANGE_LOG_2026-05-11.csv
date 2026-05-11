@@ -25,3 +25,10 @@
 2026-05-11 16:55,Sprint 1,TSK-15,Status transition,To Do,Done,require_student() was implemented for server-side student role checks,No impact - US-C on track,Kerem Ataç,,PR link later
 2026-05-11 17:00,Sprint 1,TSK-16,Status transition,To Do,Done,require_course_access() was implemented to enforce course enrollment authorization,No impact - US-C on track,Kerem Ataç,,PR link later
 2026-05-11 17:10,Sprint 1,TSK-17,Status transition,To Do,Done,unauthorized access tests were added and pytest passed locally,No impact - verifies US-C authorization behavior,Kerem Ataç,,PR link later
+2026-05-11 17:30,Sprint 1,TSK-18,Status transition,To Do,Done,listMyCourses() was implemented to return only courses assigned to the authenticated instructor,No impact - US-D on track,Kerem Ataç,,PR link later
+2026-05-11 17:40,Sprint 1,TSK-19,Status transition,To Do,Done,/instructor/courses FastAPI route was added and connected to listMyCourses(),No impact - completes instructor course listing endpoint,Kerem Ataç,,PR link later
+2026-05-11 17:50,Sprint 1,TSK-20,Status transition,To Do,Done,assigned-course tests were added and pytest passed locally,No impact - verifies US-D acceptance criteria,Kerem Ataç,,PR link later
+2026-05-11 18:10,Sprint 1,TSK-21,Status transition,To Do,Done,activities table was created in Supabase schema,No impact - required foundation for activity listing,Kerem Ataç,,PR link later
+2026-05-11 18:20,Sprint 1,TSK-22,Status transition,To Do,Done,listActivities() was implemented with instructor authorization and deterministic ordering,No impact - US-E on track,Kerem Ataç,,PR link later
+2026-05-11 18:30,Sprint 1,TSK-23,Status transition,To Do,Done,/instructor/activities FastAPI route was added and connected to listActivities(),No impact - completes instructor activity listing endpoint,Kerem Ataç,,PR link later
+2026-05-11 18:40,Sprint 1,TSK-24,Status transition,To Do,Done,activity listing tests were added and pytest passed locally,No impact - verifies deterministic activity ordering,Kerem Ataç,,PR link later
