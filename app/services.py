@@ -292,7 +292,32 @@ def listMyCourses(email: str, password: str) -> dict:
         return _error(str(exc))
 
 def listActivities(email: str, password: str, course_id: str) -> dict:
-    return _error("Not implemented yet")
+    try:
+        instructor = require_instructor(email, password)
+        require_course_access(instructor["email"], course_id, "instructor")
+
+        with _connect() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    select activity_no, status, activity_text, created_at, updated_at
+                    from public.activities
+                    where course_id = %s
+                    order by activity_no asc
+                    """,
+                    (course_id,),
+                )
+                activities = cur.fetchall()
+
+        return _success(
+            course_id=course_id,
+            activities=activities,
+        )
+
+    except PermissionError as exc:
+        return _error(str(exc))
+    except ValueError as exc:
+        return _error(str(exc))
 
 
 def createActivity(

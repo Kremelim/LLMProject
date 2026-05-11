@@ -10,6 +10,11 @@ class LoginRequest(BaseModel):
     email: str
     password: str
 
+class CourseRequest(BaseModel):
+    email: str
+    password: str
+    course_id: str
+
 
 @app.get("/")
 def root() -> dict:
@@ -32,3 +37,12 @@ def student_login(payload: LoginRequest) -> dict:
 @app.post("/instructor/courses")
 def instructor_courses(payload: LoginRequest) -> dict:
     return services.listMyCourses(payload.email, payload.password)
+
+
+@app.post("/instructor/activities")
+def instructor_activities(payload: CourseRequest) -> dict:
+    return services.listActivities(
+        payload.email,
+        payload.password,
+        payload.course_id,
+    )

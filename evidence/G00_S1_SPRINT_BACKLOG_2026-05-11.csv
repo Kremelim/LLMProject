@@ -20,9 +20,9 @@ TSK-18,US-D,Implement listMyCourses(),Kerem Ataç,2,Done,feature/US-D-list-cours
 TSK-19,US-D,Add /instructor/courses route,Kerem Ataç,0.5,Done,feature/US-D-list-courses,,
 TSK-20,US-D,Test only assigned courses returned,Kerem Ataç,0.5,Done,feature/US-D-list-courses,,
 TSK-21,US-E,Create activities table,Kerem Ataç,0.5,Done,feature/US-E-list-activities,,Created in Supabase schema
-TSK-22,US-E,Implement listActivities(),Kerem Ataç,1.5,To Do,feature/US-E-list-activities,,
-TSK-23,US-E,Add /instructor/activities route,Kerem Ataç,0.5,To Do,feature/US-E-list-activities,,
-TSK-24,US-E,Test deterministic order by activity_no,Kerem Ataç,0.5,To Do,feature/US-E-list-activities,,
+TSK-22,US-E,Implement listActivities(),Kerem Ataç,1.5,Done,feature/US-E-list-activities,,
+TSK-23,US-E,Add /instructor/activities route,Kerem Ataç,0.5,Done,feature/US-E-list-activities,,
+TSK-24,US-E,Test deterministic order by activity_no,Kerem Ataç,0.5,Done,feature/US-E-list-activities,,
 TSK-25,US-F,Implement createActivity(),Kerem Ataç,1.5,To Do,feature/US-F-create-activity,,
 TSK-26,US-F,Validate required fields,Kerem Ataç,1,To Do,feature/US-F-create-activity,,
 TSK-27,US-F,Reject duplicate activity_no,Kerem Ataç,1,To Do,feature/US-F-create-activity,,
