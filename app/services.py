@@ -9,6 +9,8 @@ from dotenv import load_dotenv
 from psycopg.rows import dict_row
 from psycopg.types.json import Jsonb
 
+import json
+
 load_dotenv()
 
 PBKDF2_ITERATIONS = 120_000
@@ -286,6 +288,158 @@ def getActivity(email: str, password: str, course_id: str, activity_no: int) -> 
         return _error(str(exc))
     except ValueError as exc:
         return _error(str(exc))
+    
+
+def _normalize_history(history):
+    if history is None:
+        return []
+
+    if isinstance(history, list):
+        return history
+
+    if isinstance(history, str):
+        try:
+            parsed = json.loads(history)
+            return parsed if isinstance(parsed, list) else []
+        except json.JSONDecodeError:
+            return []
+
+    return []
+
+
+def _build_guiding_question(activity_text: str, step_number: int) -> str:
+    questions = [
+        "What is the main problem or concept described in this activity?",
+        "Which part of the activity text supports your answer?",
+        "Can you explain your reasoning using the activity terminology?",
+        "What would be a clear example or consequence of this idea?",
+    ]
+
+    index = min(step_number, len(questions) - 1)
+    return questions[index]
+
+
+def tutorStep(
+    email: str,
+    password: str,
+    course_id: str,
+    activity_no: int,
+    student_answer: str | None = None
+) -> dict:
+    try:
+        student = require_student(email, password)
+        require_course_access(student["email"], course_id, "student")
+
+        with _connect() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    select course_id, activity_no, activity_text, status
+                    from public.activities
+                    where course_id = %s
+                      and activity_no = %s
+                    """,
+                    (course_id, activity_no),
+                )
+                activity = cur.fetchone()
+
+                if not activity:
+                    return _error("Activity not found")
+
+                if activity["status"] == "NOT_STARTED":
+                    return _error("Activity is not active yet")
+
+                if activity["status"] == "ENDED":
+                    return _error("Activity has ended")
+
+                if activity["status"] != "ACTIVE":
+                    return _error("Activity is not available")
+
+                cur.execute(
+                    """
+                    select id, conversation_history, current_score, completed
+                    from public.student_progress
+                    where student_email = %s
+                      and course_id = %s
+                      and activity_no = %s
+                    """,
+                    (student["email"], course_id, activity_no),
+                )
+                progress = cur.fetchone()
+
+                if not progress:
+                    cur.execute(
+                        """
+                        insert into public.student_progress
+                            (student_email, course_id, activity_no, conversation_history, current_score, completed)
+                        values
+                            (%s, %s, %s, %s, 0, false)
+                        returning id, conversation_history, current_score, completed
+                        """,
+                        (
+                            student["email"],
+                            course_id,
+                            activity_no,
+                            Jsonb([]),
+                        ),
+                    )
+                    progress = cur.fetchone()
+
+                history = _normalize_history(progress["conversation_history"])
+
+                if student_answer and student_answer.strip():
+                    history.append({
+                        "role": "student",
+                        "content": student_answer.strip(),
+                    })
+
+                step_number = len([item for item in history if item.get("role") == "assistant"])
+                question = _build_guiding_question(activity["activity_text"], step_number)
+
+                if not history:
+                    assistant_message = (
+                        f"Activity: {activity['activity_text']}\n\n"
+                        f"Question: {question}"
+                    )
+                else:
+                    assistant_message = (
+                        "Thank you. Let's continue step by step.\n\n"
+                        f"Question: {question}"
+                    )
+
+                history.append({
+                    "role": "assistant",
+                    "content": assistant_message,
+                })
+
+                cur.execute(
+                    """
+                    update public.student_progress
+                    set conversation_history = %s,
+                        updated_at = now()
+                    where id = %s
+                    returning id, student_email, course_id, activity_no, conversation_history, current_score, completed, updated_at
+                    """,
+                    (
+                        Jsonb(history),
+                        progress["id"],
+                    ),
+                )
+                updated_progress = cur.fetchone()
+
+            conn.commit()
+
+        return _success(
+            message=assistant_message,
+            question=question,
+            progress=updated_progress,
+        )
+
+    except PermissionError as exc:
+        return _error(str(exc))
+    except ValueError as exc:
+        return _error(str(exc))
+
 
 def logScore(email: str, password: str, course_id: str, activity_no: int, score: float, meta: str | None = None) -> dict:
     try:

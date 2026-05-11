@@ -1,9 +1,9 @@
 ﻿Task ID,Story ID,Task Description,Owner,SP,Status,Branch Name,PR Link,Notes
-TSK-41,US-G,Implement updateActivity(),Kerem Ataç,1.5,To Do,feature/US-G-update-activity,,
-TSK-42,US-G,Allow only activity_text and learning_objectives patch,Kerem Ataç,1,To Do,feature/US-G-update-activity,,
-TSK-43,US-G,Reject empty patch,Kerem Ataç,0.75,To Do,feature/US-G-update-activity,,
-TSK-44,US-G,Reject non-existent activity,Kerem Ataç,0.75,To Do,feature/US-G-update-activity,,
-TSK-45,US-G,Test update cases,Kerem Ataç,1,To Do,feature/US-G-update-activity,,
+TSK-41,US-G,Implement updateActivity(),Kerem Ataç,1.5,Done,feature/US-G-update-activity,,
+TSK-42,US-G,Allow only activity_text and learning_objectives patch,Kerem Ataç,1,Done,feature/US-G-update-activity,,
+TSK-43,US-G,Reject empty patch,Kerem Ataç,0.75,Done,feature/US-G-update-activity,,
+TSK-44,US-G,Reject non-existent activity,Kerem Ataç,0.75,Done,feature/US-G-update-activity,,
+TSK-45,US-G,Test update cases,Kerem Ataç,1,Done,feature/US-G-update-activity,,
 TSK-46,US-J,Create student_progress table,Kerem Ataç,0.5,Done,feature/US-J-tutoring-flow,,Created in initial Supabase schema
 TSK-47,US-J,Store conversation history,Kerem Ataç,1,To Do,feature/US-J-tutoring-flow,,
 TSK-48,US-J,Implement first tutoring response,Kerem Ataç,1.5,To Do,feature/US-J-tutoring-flow,,
