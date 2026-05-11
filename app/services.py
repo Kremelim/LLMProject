@@ -12,6 +12,8 @@ from psycopg.types.json import Jsonb
 import json
 import re
 import time
+import csv
+import io
 
 load_dotenv()
 
@@ -1073,8 +1075,88 @@ def manualGrade(
         return _error(str(exc))
 
 def exportScores(email: str, password: str, course_id: str, activity_no: int) -> dict:
-    return _error("Not implemented yet")
+    try:
+        instructor = require_instructor(email, password)
+        require_course_access(instructor["email"], course_id, "instructor")
 
+        with _connect() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    select id, course_id, activity_no, status
+                    from public.activities
+                    where course_id = %s
+                      and activity_no = %s
+                    """,
+                    (course_id, activity_no),
+                )
+                activity = cur.fetchone()
+
+                if not activity:
+                    return _error("Activity not found")
+
+                cur.execute(
+                    """
+                    select
+                        student_email,
+                        course_id,
+                        activity_no,
+                        score_delta,
+                        new_total_score,
+                        event_type,
+                        meta,
+                        created_at
+                    from public.score_logs
+                    where course_id = %s
+                      and activity_no = %s
+                    order by created_at asc
+                    """,
+                    (course_id, activity_no),
+                )
+                rows = cur.fetchall()
+
+        output = io.StringIO()
+
+        fieldnames = [
+            "student_email",
+            "course_id",
+            "activity_no",
+            "score_delta",
+            "new_total_score",
+            "event_type",
+            "meta",
+            "created_at",
+        ]
+
+        writer = csv.DictWriter(output, fieldnames=fieldnames)
+        writer.writeheader()
+
+        for row in rows:
+            writer.writerow({
+                "student_email": row["student_email"],
+                "course_id": row["course_id"],
+                "activity_no": row["activity_no"],
+                "score_delta": row["score_delta"],
+                "new_total_score": row["new_total_score"],
+                "event_type": row["event_type"],
+                "meta": row["meta"] or "",
+                "created_at": row["created_at"],
+            })
+
+        csv_content = output.getvalue()
+
+        return _success(
+            course_id=course_id,
+            activity_no=activity_no,
+            row_count=len(rows),
+            filename=f"scores_{course_id}_{activity_no}.csv",
+            csv=csv_content,
+        )
+
+    except PermissionError as exc:
+        return _error(str(exc))
+    except ValueError as exc:
+        return _error(str(exc))
 
 def resetActivity(email: str, password: str, course_id: str, activity_no: int) -> dict:
     try:
