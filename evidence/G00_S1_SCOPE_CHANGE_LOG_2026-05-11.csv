@@ -37,3 +37,8 @@
 2026-05-11 19:20,Sprint 1,TSK-27,Status transition,To Do,Done,duplicate activity_no validation was added for each course,No impact - verifies duplicate rejection acceptance criteria,Kerem Ataç,,PR link later
 2026-05-11 19:30,Sprint 1,TSK-28,Status transition,To Do,Done,/instructor/activity/create FastAPI route was added and connected to createActivity(),No impact - completes activity creation endpoint,Kerem Ataç,,PR link later
 2026-05-11 19:40,Sprint 1,TSK-29,Status transition,To Do,Done,create activity success failure and route tests were added and pytest passed locally,No impact - verifies US-F behavior,Kerem Ataç,,PR link later
+2026-05-11 20:00,Sprint 1,TSK-30,Status transition,To Do,Done,startActivity() was implemented to set activity status to ACTIVE with instructor authorization,No impact - US-H on track,Kerem Ataç,,PR link later
+2026-05-11 20:10,Sprint 1,TSK-31,Status transition,To Do,Done,endActivity() was implemented to set activity status to ENDED with instructor authorization,No impact - US-H on track,Kerem Ataç,,PR link later
+2026-05-11 20:20,Sprint 1,TSK-32,Status transition,To Do,Done,logScore() was updated to reject score logging when activity status is ENDED,No impact - verifies ENDED activity rule,Kerem Ataç,,PR link later
+2026-05-11 20:30,Sprint 1,TSK-33,Status transition,To Do,Done,/instructor/activity/start and /instructor/activity/end routes were added,No impact - completes activity state endpoints,Kerem Ataç,,PR link later
+2026-05-11 20:40,Sprint 1,TSK-34,Status transition,To Do,Done,status transition and ENDED score-blocking tests were added and pytest passed locally,No impact - verifies US-H acceptance criteria,Kerem Ataç,,PR link later
