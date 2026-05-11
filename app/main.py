@@ -36,6 +36,13 @@ class UpdateActivityRequest(BaseModel):
     activity_no: int
     patch: dict
 
+class TutorStepRequest(BaseModel):
+    email: str
+    password: str
+    course_id: str
+    activity_no: int
+    student_answer: str | None = None
+
 
 @app.get("/")
 def root() -> dict:
@@ -117,4 +124,15 @@ def instructor_update_activity(payload: UpdateActivityRequest) -> dict:
         payload.course_id,
         payload.activity_no,
         payload.patch,
+    )
+
+
+@app.post("/student/tutor")
+def student_tutor_step(payload: TutorStepRequest) -> dict:
+    return services.tutorStep(
+        payload.email,
+        payload.password,
+        payload.course_id,
+        payload.activity_no,
+        payload.student_answer,
     )
