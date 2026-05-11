@@ -29,6 +29,13 @@ class ActivityStateRequest(BaseModel):
     course_id: str
     activity_no: int
 
+class UpdateActivityRequest(BaseModel):
+    email: str
+    password: str
+    course_id: str
+    activity_no: int
+    patch: dict
+
 
 @app.get("/")
 def root() -> dict:
@@ -99,4 +106,15 @@ def student_get_activity(payload: ActivityStateRequest) -> dict:
         payload.password,
         payload.course_id,
         payload.activity_no,
+    )
+
+
+@app.patch("/instructor/activity/update")
+def instructor_update_activity(payload: UpdateActivityRequest) -> dict:
+    return services.updateActivity(
+        payload.email,
+        payload.password,
+        payload.course_id,
+        payload.activity_no,
+        payload.patch,
     )

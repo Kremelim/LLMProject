@@ -498,8 +498,79 @@ def createActivity(
         return _error(str(exc))
 
 def updateActivity(email: str, password: str, course_id: str, activity_no: int, patch: dict) -> dict:
-    return _error("Not implemented yet")
+    try:
+        instructor = require_instructor(email, password)
+        require_course_access(instructor["email"], course_id, "instructor")
 
+        if not patch or not isinstance(patch, dict):
+            return _error("Patch cannot be empty")
+
+        allowed_fields = {"activity_text", "learning_objectives"}
+        unknown_fields = set(patch.keys()) - allowed_fields
+
+        if unknown_fields:
+            return _error("Only activity_text and learning_objectives can be updated")
+
+        update_parts = []
+        values = []
+
+        if "activity_text" in patch:
+            activity_text = patch["activity_text"]
+
+            if not isinstance(activity_text, str) or not activity_text.strip():
+                return _error("Activity text cannot be empty")
+
+            update_parts.append("activity_text = %s")
+            values.append(activity_text.strip())
+
+        if "learning_objectives" in patch:
+            learning_objectives = patch["learning_objectives"]
+
+            if not isinstance(learning_objectives, list):
+                return _error("Learning objectives must be a list")
+
+            cleaned_objectives = [
+                objective.strip()
+                for objective in learning_objectives
+                if isinstance(objective, str) and objective.strip()
+            ]
+
+            if not cleaned_objectives:
+                return _error("At least one non-empty learning objective is required")
+
+            update_parts.append("learning_objectives = %s")
+            values.append(Jsonb(cleaned_objectives))
+
+        if not update_parts:
+            return _error("Patch cannot be empty")
+
+        update_parts.append("updated_at = now()")
+        values.extend([course_id, activity_no])
+
+        query = f"""
+            update public.activities
+            set {", ".join(update_parts)}
+            where course_id = %s
+              and activity_no = %s
+            returning id, course_id, activity_no, activity_text, learning_objectives, status, created_at, updated_at
+        """
+
+        with _connect() as conn:
+            with conn.cursor() as cur:
+                cur.execute(query, tuple(values))
+                activity = cur.fetchone()
+
+                if not activity:
+                    return _error("Activity not found")
+
+            conn.commit()
+
+        return _success(activity=activity)
+
+    except PermissionError as exc:
+        return _error(str(exc))
+    except ValueError as exc:
+        return _error(str(exc))
 
 def startActivity(email: str, password: str, course_id: str, activity_no: int) -> dict:
     try:
