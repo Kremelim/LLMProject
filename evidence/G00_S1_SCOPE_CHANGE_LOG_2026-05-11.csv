@@ -32,3 +32,8 @@
 2026-05-11 18:20,Sprint 1,TSK-22,Status transition,To Do,Done,listActivities() was implemented with instructor authorization and deterministic ordering,No impact - US-E on track,Kerem Ataç,,PR link later
 2026-05-11 18:30,Sprint 1,TSK-23,Status transition,To Do,Done,/instructor/activities FastAPI route was added and connected to listActivities(),No impact - completes instructor activity listing endpoint,Kerem Ataç,,PR link later
 2026-05-11 18:40,Sprint 1,TSK-24,Status transition,To Do,Done,activity listing tests were added and pytest passed locally,No impact - verifies deterministic activity ordering,Kerem Ataç,,PR link later
+2026-05-11 19:00,Sprint 1,TSK-25,Status transition,To Do,Done,createActivity() was implemented with instructor authorization and database insert behavior,No impact - US-F on track,Kerem Ataç,,PR link later
+2026-05-11 19:10,Sprint 1,TSK-26,Status transition,To Do,Done,required field validation was added for course_id activity_text and learning_objectives,No impact - verifies required field acceptance criteria,Kerem Ataç,,PR link later
+2026-05-11 19:20,Sprint 1,TSK-27,Status transition,To Do,Done,duplicate activity_no validation was added for each course,No impact - verifies duplicate rejection acceptance criteria,Kerem Ataç,,PR link later
+2026-05-11 19:30,Sprint 1,TSK-28,Status transition,To Do,Done,/instructor/activity/create FastAPI route was added and connected to createActivity(),No impact - completes activity creation endpoint,Kerem Ataç,,PR link later
+2026-05-11 19:40,Sprint 1,TSK-29,Status transition,To Do,Done,create activity success failure and route tests were added and pytest passed locally,No impact - verifies US-F behavior,Kerem Ataç,,PR link later

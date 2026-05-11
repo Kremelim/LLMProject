@@ -15,6 +15,13 @@ class CourseRequest(BaseModel):
     password: str
     course_id: str
 
+class CreateActivityRequest(BaseModel):
+    email: str
+    password: str
+    course_id: str
+    activity_text: str
+    learning_objectives: list[str]
+    activity_no_optional: int | None = None
 
 @app.get("/")
 def root() -> dict:
@@ -45,4 +52,15 @@ def instructor_activities(payload: CourseRequest) -> dict:
         payload.email,
         payload.password,
         payload.course_id,
+    )
+
+@app.post("/instructor/activity/create")
+def instructor_create_activity(payload: CreateActivityRequest) -> dict:
+    return services.createActivity(
+        payload.email,
+        payload.password,
+        payload.course_id,
+        payload.activity_text,
+        payload.learning_objectives,
+        payload.activity_no_optional,
     )
