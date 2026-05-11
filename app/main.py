@@ -22,3 +22,13 @@ def root() -> dict:
 @app.post("/instructor/login")
 def instructor_login(payload: LoginRequest) -> dict:
     return services.instructorLogin(payload.email, payload.password)
+
+
+@app.post("/student/login")
+def student_login(payload: LoginRequest) -> dict:
+    return services.studentLogin(payload.email, payload.password)
+
+
+@app.post("/instructor/courses")
+def instructor_courses(payload: LoginRequest) -> dict:
+    return services.listMyCourses(payload.email, payload.password)
