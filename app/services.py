@@ -244,8 +244,48 @@ def setStudentPassword(email: str, password: str) -> dict:
 
 
 def getActivity(email: str, password: str, course_id: str, activity_no: int) -> dict:
-    return _error("Not implemented yet")
+    try:
+        student = require_student(email, password)
+        require_course_access(student["email"], course_id, "student")
 
+        with _connect() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    select course_id, activity_no, activity_text, status
+                    from public.activities
+                    where course_id = %s
+                      and activity_no = %s
+                    """,
+                    (course_id, activity_no),
+                )
+                activity = cur.fetchone()
+
+        if not activity:
+            return _error("Activity not found")
+
+        if activity["status"] == "NOT_STARTED":
+            return _error("Activity is not active yet")
+
+        if activity["status"] == "ENDED":
+            return _error("Activity has ended")
+
+        if activity["status"] != "ACTIVE":
+            return _error("Activity is not available")
+
+        return _success(
+            activity={
+                "course_id": activity["course_id"],
+                "activity_no": activity["activity_no"],
+                "activity_text": activity["activity_text"],
+                "status": activity["status"],
+            }
+        )
+
+    except PermissionError as exc:
+        return _error(str(exc))
+    except ValueError as exc:
+        return _error(str(exc))
 
 def logScore(email: str, password: str, course_id: str, activity_no: int, score: float, meta: str | None = None) -> dict:
     try:

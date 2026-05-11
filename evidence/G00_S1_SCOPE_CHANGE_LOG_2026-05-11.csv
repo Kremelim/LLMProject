@@ -42,3 +42,9 @@
 2026-05-11 20:20,Sprint 1,TSK-32,Status transition,To Do,Done,logScore() was updated to reject score logging when activity status is ENDED,No impact - verifies ENDED activity rule,Kerem Ataç,,PR link later
 2026-05-11 20:30,Sprint 1,TSK-33,Status transition,To Do,Done,/instructor/activity/start and /instructor/activity/end routes were added,No impact - completes activity state endpoints,Kerem Ataç,,PR link later
 2026-05-11 20:40,Sprint 1,TSK-34,Status transition,To Do,Done,status transition and ENDED score-blocking tests were added and pytest passed locally,No impact - verifies US-H acceptance criteria,Kerem Ataç,,PR link later
+2026-05-11 21:00,Sprint 1,TSK-35,Status transition,To Do,Done,getActivity() was implemented with student authentication and course access checks,No impact - US-I on track,Kerem Ataç,,PR link later
+2026-05-11 21:10,Sprint 1,TSK-36,Status transition,To Do,Done,learning_objectives were excluded from the student activity response,No impact - verifies student-facing privacy rule,Kerem Ataç,,PR link later
+2026-05-11 21:20,Sprint 1,TSK-37,Status transition,To Do,Done,NOT_STARTED activities are rejected in getActivity(),No impact - verifies ACTIVE-only access rule,Kerem Ataç,,PR link later
+2026-05-11 21:30,Sprint 1,TSK-38,Status transition,To Do,Done,ENDED activities are rejected in getActivity(),No impact - verifies ended activity access rule,Kerem Ataç,,PR link later
+2026-05-11 21:40,Sprint 1,TSK-39,Status transition,To Do,Done,non-enrolled student access is rejected through course authorization,No impact - verifies server-side authorization,Kerem Ataç,,PR link later
+2026-05-11 21:50,Sprint 1,TSK-40,Status transition,To Do,Done,all student activity access tests were added and pytest passed locally,No impact - completes US-I acceptance testing,Kerem Ataç,,PR link later
