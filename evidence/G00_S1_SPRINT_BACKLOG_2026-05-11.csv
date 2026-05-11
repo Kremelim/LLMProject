@@ -16,9 +16,9 @@ TSK-14,US-C,Implement require_instructor(),Kerem Ataç,1,Done,feature/US-C-autho
 TSK-15,US-C,Implement require_student(),Kerem Ataç,1,Done,feature/US-C-authorization,,
 TSK-16,US-C,Implement require_course_access(),Kerem Ataç,1,Done,feature/US-C-authorization,,
 TSK-17,US-C,Test unauthorized access,Kerem Ataç,1,Done,feature/US-C-authorization,,
-TSK-18,US-D,Implement listMyCourses(),Kerem Ataç,2,To Do,feature/US-D-list-courses,,
-TSK-19,US-D,Add /instructor/courses route,Kerem Ataç,0.5,To Do,feature/US-D-list-courses,,
-TSK-20,US-D,Test only assigned courses returned,Kerem Ataç,0.5,To Do,feature/US-D-list-courses,,
+TSK-18,US-D,Implement listMyCourses(),Kerem Ataç,2,Done,feature/US-D-list-courses,,
+TSK-19,US-D,Add /instructor/courses route,Kerem Ataç,0.5,Done,feature/US-D-list-courses,,
+TSK-20,US-D,Test only assigned courses returned,Kerem Ataç,0.5,Done,feature/US-D-list-courses,,
 TSK-21,US-E,Create activities table,Kerem Ataç,0.5,Done,feature/US-E-list-activities,,Created in Supabase schema
 TSK-22,US-E,Implement listActivities(),Kerem Ataç,1.5,To Do,feature/US-E-list-activities,,
 TSK-23,US-E,Add /instructor/activities route,Kerem Ataç,0.5,To Do,feature/US-E-list-activities,,
