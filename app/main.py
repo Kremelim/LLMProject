@@ -52,6 +52,27 @@ class ManualGradeRequest(BaseModel):
     score: float
     meta: str | None = None
 
+class StudentChangePasswordRequest(BaseModel):
+    email: str
+    password: str
+    new_password: str
+    old_password: str
+
+
+class InstructorChangePasswordRequest(BaseModel):
+    email: str
+    password: str
+    old_password: str
+    new_password: str
+
+
+class ResetStudentPasswordRequest(BaseModel):
+    email: str
+    password: str
+    course_id: str
+    student_email: str
+    new_password: str
+
 @app.get("/")
 def root() -> dict:
     return {
@@ -173,4 +194,35 @@ def instructor_export_scores(payload: ActivityStateRequest) -> dict:
         payload.password,
         payload.course_id,
         payload.activity_no,
+    )
+
+
+@app.post("/student/password/change")
+def student_change_password(payload: StudentChangePasswordRequest) -> dict:
+    return services.changeStudentPassword(
+        payload.email,
+        payload.password,
+        payload.new_password,
+        payload.old_password,
+    )
+
+
+@app.post("/instructor/password/change")
+def instructor_change_password(payload: InstructorChangePasswordRequest) -> dict:
+    return services.changeInstructorPassword(
+        payload.email,
+        payload.password,
+        payload.old_password,
+        payload.new_password,
+    )
+
+
+@app.post("/instructor/student/reset-password")
+def instructor_reset_student_password(payload: ResetStudentPasswordRequest) -> dict:
+    return services.resetStudentPassword(
+        payload.email,
+        payload.password,
+        payload.course_id,
+        payload.student_email,
+        payload.new_password,
     )

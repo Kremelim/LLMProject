@@ -110,55 +110,64 @@ def _get_user(email: str) -> dict | None:
     finally:
         conn.close()
 
-def _set_password_for_role(email: str, password: str | None, expected_role: str) -> dict:
+def _change_password_for_role(
+    email: str,
+    password: str,
+    old_password: str,
+    new_password: str,
+    expected_role: str,
+) -> dict:
     if not email or not email.strip():
         return _error("Email is required")
 
     if not password or not password.strip():
         return _error("Password is required")
 
+    if not old_password or not old_password.strip():
+        return _error("Old password is required")
+
+    if not new_password or not new_password.strip():
+        return _error("New password is required")
+
+    if len(new_password) < 6:
+        return _error("New password must be at least 6 characters")
+
     normalized_email = _normalize_email(email)
+    user = _get_user(normalized_email)
+
+    if not user:
+        return _error("Invalid email or password")
+
+    if user["role"] != expected_role:
+        return _error(f"User is not a valid {expected_role}")
+
+    if not _verify_password(password, user["password_hash"]):
+        return _error("Invalid email or password")
+
+    if not _verify_password(old_password, user["password_hash"]):
+        return _error("Old password is incorrect")
+
+    new_password_hash = _hash_password(new_password)
 
     with _connect() as conn:
         with conn.cursor() as cur:
             cur.execute(
                 """
-                select email, password_hash, role, full_name
-                from public.users
-                where lower(email) = %s
-                """,
-                (normalized_email,),
-            )
-            user = cur.fetchone()
-
-            if not user:
-                return _error("User not found")
-
-            if user["role"] != expected_role:
-                return _error(f"User is not a valid {expected_role}")
-
-            if user["password_hash"]:
-                return _error("Password is already set")
-
-            password_hash = _hash_password(password)
-
-            cur.execute(
-                """
                 update public.users
                 set password_hash = %s
                 where lower(email) = %s
+                returning email, role, full_name
                 """,
-                (password_hash, normalized_email),
+                (new_password_hash, normalized_email),
             )
+            updated_user = cur.fetchone()
 
         conn.commit()
 
     return _success(
-        message="Password set successfully",
-        email=normalized_email,
-        role=expected_role,
+        message="Password changed successfully",
+        user=updated_user,
     )
-
 
 def _login_as_role(email: str, password: str, expected_role: str) -> dict:
     if not email or not email.strip():
@@ -256,8 +265,13 @@ def studentLogin(email: str, password: str) -> dict:
 
 
 def changeStudentPassword(email: str, password: str, new_password: str, old_password: str) -> dict:
-    return _error("Not implemented yet")
-
+    return _change_password_for_role(
+        email=email,
+        password=password,
+        old_password=old_password,
+        new_password=new_password,
+        expected_role="student",
+    )
 
 def setStudentPassword(email: str, password: str) -> dict:
     return _set_password_for_role(email, password, "student")
@@ -651,8 +665,13 @@ def instructorLogin(email: str, password: str) -> dict:
 
 
 def changeInstructorPassword(email: str, password: str, old_password: str, new_password: str) -> dict:
-    return _error("Not implemented yet")
-
+    return _change_password_for_role(
+        email=email,
+        password=password,
+        old_password=old_password,
+        new_password=new_password,
+        expected_role="instructor",
+    )
 
 def setInstructorPassword(email: str, password: str | None = None) -> dict:
     return _set_password_for_role(email, password, "instructor")
@@ -1226,4 +1245,74 @@ def resetActivity(email: str, password: str, course_id: str, activity_no: int) -
         return _error(str(exc))
 
 def resetStudentPassword(email: str, password: str, course_id: str, student_email: str, new_password: str) -> dict:
-    return _error("Not implemented yet")
+    try:
+        instructor = require_instructor(email, password)
+        require_course_access(instructor["email"], course_id, "instructor")
+
+        normalized_student_email = _normalize_email(student_email)
+
+        if not normalized_student_email:
+            return _error("Student email is required")
+
+        if not new_password or not new_password.strip():
+            return _error("New password is required")
+
+        if len(new_password) < 6:
+            return _error("New password must be at least 6 characters")
+
+        with _connect() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    select email, role, full_name
+                    from public.users
+                    where lower(email) = %s
+                    """,
+                    (normalized_student_email,),
+                )
+                student = cur.fetchone()
+
+                if not student:
+                    return _error("Student not found")
+
+                if student["role"] != "student":
+                    return _error("Target user is not a student")
+
+                cur.execute(
+                    """
+                    select 1
+                    from public.course_enrollments
+                    where lower(user_email) = %s
+                      and course_id = %s
+                      and role = 'student'
+                    limit 1
+                    """,
+                    (normalized_student_email, course_id),
+                )
+                enrollment = cur.fetchone()
+
+                if not enrollment:
+                    return _error("Student is not enrolled in this course")
+
+                cur.execute(
+                    """
+                    update public.users
+                    set password_hash = %s
+                    where lower(email) = %s
+                    returning email, role, full_name
+                    """,
+                    (_hash_password(new_password), normalized_student_email),
+                )
+                updated_student = cur.fetchone()
+
+            conn.commit()
+
+        return _success(
+            message="Student password reset successfully",
+            student=updated_student,
+        )
+
+    except PermissionError as exc:
+        return _error(str(exc))
+    except ValueError as exc:
+        return _error(str(exc))
