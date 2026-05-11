@@ -33,3 +33,6 @@
 2026-05-12 02:50,Sprint 2,TSK-66,Status transition,To Do,Done,resetActivity() now deletes student_progress rows for the selected course and activity,No impact - verifies progress reset rule,Kerem Ataç,,PR link later
 2026-05-12 03:00,Sprint 2,TSK-67,Status transition,To Do,Done,resetActivity() now sets the activity status to ENDED after cleanup,No impact - verifies reset final state,Kerem Ataç,,PR link later
 2026-05-12 03:10,Sprint 2,TSK-68,Status transition,To Do,Done,reset tests were added and pytest passed locally including score logging blocked after reset,No impact - completes US-M acceptance testing,Kerem Ataç,,PR link later
+2026-05-12 03:30,Sprint 2,TSK-69,Status transition,To Do,Done,exportScores() was implemented with instructor authorization and score log retrieval,No impact - export work on track,Kerem Ataç,,PR link later
+2026-05-12 03:40,Sprint 2,TSK-70,Status transition,To Do,Done,exportScores() now generates CSV content with score log rows and filename metadata,No impact - verifies CSV generation behavior,Kerem Ataç,,PR link later
+2026-05-12 03:50,Sprint 2,TSK-71,Status transition,To Do,Done,export score column and route tests were added and pytest passed locally,No impact - completes export score testing evidence,Kerem Ataç,,PR link later

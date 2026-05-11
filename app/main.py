@@ -165,3 +165,12 @@ def instructor_reset_activity(payload: ActivityStateRequest) -> dict:
         payload.course_id,
         payload.activity_no,
     )
+
+@app.post("/instructor/activity/export-scores")
+def instructor_export_scores(payload: ActivityStateRequest) -> dict:
+    return services.exportScores(
+        payload.email,
+        payload.password,
+        payload.course_id,
+        payload.activity_no,
+    )
