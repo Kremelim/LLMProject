@@ -156,3 +156,12 @@ def instructor_manual_grade(payload: ManualGradeRequest) -> dict:
         payload.score,
         payload.meta,
     )
+
+@app.post("/instructor/activity/reset")
+def instructor_reset_activity(payload: ActivityStateRequest) -> dict:
+    return services.resetActivity(
+        payload.email,
+        payload.password,
+        payload.course_id,
+        payload.activity_no,
+    )

@@ -28,3 +28,8 @@
 2026-05-12 01:50,Sprint 2,TSK-61,Status transition,To Do,Done,manualGrade() now writes score_logs entries with event_type MANUAL,No impact - verifies manual grading event logging,Kerem Ataç,,PR link later
 2026-05-12 02:00,Sprint 2,TSK-62,Status transition,To Do,Done,manualGrade() enforces instructor authentication course authorization and student enrollment checks,No impact - verifies instructor authorization rule,Kerem Ataç,,PR link later
 2026-05-12 02:10,Sprint 2,TSK-63,Status transition,To Do,Done,manual grading success unauthorized and route tests were added and pytest passed locally,No impact - completes US-L acceptance testing,Kerem Ataç,,PR link later
+2026-05-12 02:30,Sprint 2,TSK-64,Status transition,To Do,Done,resetActivity() was implemented with instructor authorization and activity lookup,No impact - US-M on track,Kerem Ataç,,PR link later
+2026-05-12 02:40,Sprint 2,TSK-65,Status transition,To Do,Done,resetActivity() now deletes score_logs for the selected course and activity,No impact - verifies score cleanup rule,Kerem Ataç,,PR link later
+2026-05-12 02:50,Sprint 2,TSK-66,Status transition,To Do,Done,resetActivity() now deletes student_progress rows for the selected course and activity,No impact - verifies progress reset rule,Kerem Ataç,,PR link later
+2026-05-12 03:00,Sprint 2,TSK-67,Status transition,To Do,Done,resetActivity() now sets the activity status to ENDED after cleanup,No impact - verifies reset final state,Kerem Ataç,,PR link later
+2026-05-12 03:10,Sprint 2,TSK-68,Status transition,To Do,Done,reset tests were added and pytest passed locally including score logging blocked after reset,No impact - completes US-M acceptance testing,Kerem Ataç,,PR link later

@@ -1077,8 +1077,71 @@ def exportScores(email: str, password: str, course_id: str, activity_no: int) ->
 
 
 def resetActivity(email: str, password: str, course_id: str, activity_no: int) -> dict:
-    return _error("Not implemented yet")
+    try:
+        instructor = require_instructor(email, password)
+        require_course_access(instructor["email"], course_id, "instructor")
 
+        with _connect() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    select id, course_id, activity_no, status
+                    from public.activities
+                    where course_id = %s
+                      and activity_no = %s
+                    """,
+                    (course_id, activity_no),
+                )
+                existing_activity = cur.fetchone()
+
+                if not existing_activity:
+                    return _error("Activity not found")
+
+                cur.execute(
+                    """
+                    delete from public.score_logs
+                    where course_id = %s
+                      and activity_no = %s
+                    """,
+                    (course_id, activity_no),
+                )
+                deleted_score_logs = cur.rowcount
+
+                cur.execute(
+                    """
+                    delete from public.student_progress
+                    where course_id = %s
+                      and activity_no = %s
+                    """,
+                    (course_id, activity_no),
+                )
+                deleted_progress_rows = cur.rowcount
+
+                cur.execute(
+                    """
+                    update public.activities
+                    set status = 'ENDED',
+                        updated_at = now()
+                    where course_id = %s
+                      and activity_no = %s
+                    returning id, course_id, activity_no, activity_text, status, created_at, updated_at
+                    """,
+                    (course_id, activity_no),
+                )
+                activity = cur.fetchone()
+
+            conn.commit()
+
+        return _success(
+            activity=activity,
+            deleted_score_logs=deleted_score_logs,
+            deleted_progress_rows=deleted_progress_rows,
+        )
+
+    except PermissionError as exc:
+        return _error(str(exc))
+    except ValueError as exc:
+        return _error(str(exc))
 
 def resetStudentPassword(email: str, password: str, course_id: str, student_email: str, new_password: str) -> dict:
     return _error("Not implemented yet")
