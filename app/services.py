@@ -169,6 +169,64 @@ def _login_as_role(email: str, password: str, expected_role: str) -> dict:
         },
     )
 
+def require_user(email: str, password: str) -> dict:
+    if not email or not email.strip():
+        raise ValueError("Email is required")
+
+    if not password or not password.strip():
+        raise ValueError("Password is required")
+
+    user = _get_user(email)
+
+    if not user:
+        raise PermissionError("Invalid email or password")
+
+    if not _verify_password(password, user["password_hash"]):
+        raise PermissionError("Invalid email or password")
+
+    return user
+
+
+def require_instructor(email: str, password: str) -> dict:
+    user = require_user(email, password)
+
+    if user["role"] != "instructor":
+        raise PermissionError("Instructor access required")
+
+    return user
+
+
+def require_student(email: str, password: str) -> dict:
+    user = require_user(email, password)
+
+    if user["role"] != "student":
+        raise PermissionError("Student access required")
+
+    return user
+
+
+def require_course_access(email: str, course_id: str, role: str) -> bool:
+    normalized_email = _normalize_email(email)
+
+    with _connect() as conn:
+        with conn.cursor() as cur:
+            cur.execute(
+                """
+                select 1
+                from public.course_enrollments
+                where lower(user_email) = %s
+                  and course_id = %s
+                  and role = %s
+                limit 1
+                """,
+                (normalized_email, course_id, role),
+            )
+            row = cur.fetchone()
+
+    if not row:
+        raise PermissionError("Course access denied")
+
+    return True
 
 # Student APIs
 
@@ -207,8 +265,31 @@ def setInstructorPassword(email: str, password: str | None = None) -> dict:
 
 
 def listMyCourses(email: str, password: str) -> dict:
-    return _error("Not implemented yet")
+    try:
+        instructor = require_instructor(email, password)
 
+        with _connect() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    select c.id, c.name
+                    from public.courses c
+                    join public.course_enrollments ce
+                      on ce.course_id = c.id
+                    where lower(ce.user_email) = %s
+                      and ce.role = 'instructor'
+                    order by c.id asc
+                    """,
+                    (_normalize_email(instructor["email"]),),
+                )
+                courses = cur.fetchall()
+
+        return _success(courses=courses)
+
+    except PermissionError as exc:
+        return _error(str(exc))
+    except ValueError as exc:
+        return _error(str(exc))
 
 def listActivities(email: str, password: str, course_id: str) -> dict:
     return _error("Not implemented yet")

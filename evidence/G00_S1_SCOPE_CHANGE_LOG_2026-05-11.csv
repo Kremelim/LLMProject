@@ -18,3 +18,10 @@
 2026-05-11 15:50,Sprint 1,TSK-08,Status transition,To Do,Done,studentLogin() was implemented using shared role-based login helper,No impact - US-B on track,Kerem Ataç,,PR link later
 2026-05-11 16:00,Sprint 1,TSK-09,Status transition,To Do,Done,/student/login FastAPI route was added and connected to studentLogin(),No impact - completes student login endpoint for US-B,Kerem Ataç,,PR link later
 2026-05-11 16:10,Sprint 1,TSK-10,Status transition,To Do,Done,student login tests were added and pytest passed locally,No impact - verifies US-B student authentication behavior,Kerem Ataç,,PR link later
+2026-05-11 16:30,Sprint 1,TSK-11,Status transition,To Do,Done,courses table was created in Supabase schema,No impact - required foundation for course authorization,Kerem Ataç,,PR link later
+2026-05-11 16:35,Sprint 1,TSK-12,Status transition,To Do,Done,course_enrollments table was created in Supabase schema,No impact - required foundation for role and course access checks,Kerem Ataç,,PR link later
+2026-05-11 16:45,Sprint 1,TSK-13,Status transition,To Do,Done,require_user() was implemented to validate credentials on protected actions,No impact - US-C on track,Kerem Ataç,,PR link later
+2026-05-11 16:50,Sprint 1,TSK-14,Status transition,To Do,Done,require_instructor() was implemented for server-side instructor role checks,No impact - US-C on track,Kerem Ataç,,PR link later
+2026-05-11 16:55,Sprint 1,TSK-15,Status transition,To Do,Done,require_student() was implemented for server-side student role checks,No impact - US-C on track,Kerem Ataç,,PR link later
+2026-05-11 17:00,Sprint 1,TSK-16,Status transition,To Do,Done,require_course_access() was implemented to enforce course enrollment authorization,No impact - US-C on track,Kerem Ataç,,PR link later
+2026-05-11 17:10,Sprint 1,TSK-17,Status transition,To Do,Done,unauthorized access tests were added and pytest passed locally,No impact - verifies US-C authorization behavior,Kerem Ataç,,PR link later

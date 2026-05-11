@@ -3,19 +3,19 @@ TSK-01,US-A,Create users table,Kerem Ataç,0.5,Done,feature/US-A-instructor-auth
 TSK-02,US-A,Seed instructor user,Kerem Ataç,0.5,Done,feature/US-A-instructor-auth-impl,,Seeded instructor1 and instructor2
 TSK-03,US-A,Implement password hashing/checking,Kerem Ataç,0.5,Done,feature/US-A-instructor-auth-impl,,PBKDF2 hashing implemented
 TSK-04,US-A,Implement instructorLogin(),Kerem Ataç,0.75,Done,feature/US-A-instructor-auth-impl,,Manual login tested
-TSK-05,US-A,Add /instructor/login route,Kerem Ataç,0.25,To Do,feature/US-A-instructor-auth-impl,,
-TSK-06,US-A,Write instructor login tests,Kerem Ataç,0.5,To Do,feature/US-A-instructor-auth-impl,,
+TSK-05,US-A,Add /instructor/login route,Kerem Ataç,0.25,Done,feature/US-A-instructor-auth-impl,,
+TSK-06,US-A,Write instructor login tests,Kerem Ataç,0.5,Done,feature/US-A-instructor-auth-impl,,
 TSK-07,US-B,Seed student user,Kerem Ataç,0.5,Done,feature/US-B-student-auth,,Seeded student1 and student2
-TSK-08,US-B,Implement studentLogin(),Kerem Ataç,1,To Do,feature/US-B-student-auth,,
-TSK-09,US-B,Add /student/login route,Kerem Ataç,0.5,To Do,feature/US-B-student-auth,,
-TSK-10,US-B,Write student login tests,Kerem Ataç,1,To Do,feature/US-B-student-auth,,
+TSK-08,US-B,Implement studentLogin(),Kerem Ataç,1,Done,feature/US-B-student-auth,,
+TSK-09,US-B,Add /student/login route,Kerem Ataç,0.5,Done,feature/US-B-student-auth,,
+TSK-10,US-B,Write student login tests,Kerem Ataç,1,Done,feature/US-B-student-auth,,
 TSK-11,US-C,Create courses table,Kerem Ataç,0.5,Done,feature/US-C-authorization,,Created in Supabase schema
 TSK-12,US-C,Create course_enrollments table,Kerem Ataç,0.5,Done,feature/US-C-authorization,,Created in Supabase schema
-TSK-13,US-C,Implement require_user(),Kerem Ataç,1,To Do,feature/US-C-authorization,,
-TSK-14,US-C,Implement require_instructor(),Kerem Ataç,1,To Do,feature/US-C-authorization,,
-TSK-15,US-C,Implement require_student(),Kerem Ataç,1,To Do,feature/US-C-authorization,,
-TSK-16,US-C,Implement require_course_access(),Kerem Ataç,1,To Do,feature/US-C-authorization,,
-TSK-17,US-C,Test unauthorized access,Kerem Ataç,1,To Do,feature/US-C-authorization,,
+TSK-13,US-C,Implement require_user(),Kerem Ataç,1,Done,feature/US-C-authorization,,
+TSK-14,US-C,Implement require_instructor(),Kerem Ataç,1,Done,feature/US-C-authorization,,
+TSK-15,US-C,Implement require_student(),Kerem Ataç,1,Done,feature/US-C-authorization,,
+TSK-16,US-C,Implement require_course_access(),Kerem Ataç,1,Done,feature/US-C-authorization,,
+TSK-17,US-C,Test unauthorized access,Kerem Ataç,1,Done,feature/US-C-authorization,,
 TSK-18,US-D,Implement listMyCourses(),Kerem Ataç,2,To Do,feature/US-D-list-courses,,
 TSK-19,US-D,Add /instructor/courses route,Kerem Ataç,0.5,To Do,feature/US-D-list-courses,,
 TSK-20,US-D,Test only assigned courses returned,Kerem Ataç,0.5,To Do,feature/US-D-list-courses,,
