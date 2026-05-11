@@ -5,3 +5,22 @@
 2026-05-11 22:15,Sprint 2,US-L,Status transition,Backlog,To Do,Selected for Sprint 2 as exception handling after core scoring,No impact - Sprint 2 planned,Kerem Ataç,,
 2026-05-11 22:20,Sprint 2,US-M,Status transition,Backlog,To Do,Selected for Sprint 2 because reset depends on progress and score logs,No impact - Sprint 2 planned,Kerem Ataç,,
 2026-05-11 22:25,Sprint 2,EXPORT,Status transition,Backlog,To Do,Selected for Sprint 2 because instructors need score export after scoring implementation,No impact - Sprint 2 planned,Kerem Ataç,,
+2026-05-11 22:40,Sprint 2,TSK-41,Status transition,To Do,Done,updateActivity() was implemented with instructor authorization and database update behavior,No impact - US-G on track,Kerem Ataç,,PR link later
+2026-05-11 22:45,Sprint 2,TSK-42,Status transition,To Do,Done,updateActivity() now allows only activity_text and learning_objectives fields,No impact - verifies allowed-fields acceptance criterion,Kerem Ataç,,PR link later
+2026-05-11 22:50,Sprint 2,TSK-43,Status transition,To Do,Done,empty patch validation was added,No impact - verifies empty patch rejection,Kerem Ataç,,PR link later
+2026-05-11 22:55,Sprint 2,TSK-44,Status transition,To Do,Done,non-existent activity update returns a clear error,No impact - verifies missing activity handling,Kerem Ataç,,PR link later
+2026-05-11 23:00,Sprint 2,TSK-45,Status transition,To Do,Done,update activity function and route tests were added and pytest passed locally,No impact - completes US-G acceptance testing,Kerem Ataç,,PR link later
+2026-05-11 23:10,Sprint 2,TSK-46,Status transition,To Do,Done,student_progress table already exists from initial Supabase schema,No impact - supports tutoring progress persistence,Kerem Ataç,,PR link later
+2026-05-11 23:20,Sprint 2,TSK-47,Status transition,To Do,Done,conversation history is stored in student_progress for each student activity,No impact - US-J on track,Kerem Ataç,,PR link later
+2026-05-11 23:30,Sprint 2,TSK-48,Status transition,To Do,Done,first tutoring response now shows activity text and asks exactly one question,No impact - verifies first response acceptance criterion,Kerem Ataç,,PR link later
+2026-05-11 23:40,Sprint 2,TSK-49,Status transition,To Do,Done,tutorStep returns one guiding question per student step,No impact - verifies one-question-at-a-time flow,Kerem Ataç,,PR link later
+2026-05-11 23:50,Sprint 2,TSK-50,Status transition,To Do,Done,tutoring logic was implemented with deterministic fallback suitable for local tests and future OpenRouter integration,No impact - avoids blocking tests on external LLM availability,Kerem Ataç,,PR link later
+2026-05-11 23:55,Sprint 2,TSK-51,Status transition,To Do,Done,tutoring flow now rejects ENDED activities before continuing,No impact - verifies ended activity blocking rule,Kerem Ataç,,PR link later
+2026-05-12 00:05,Sprint 2,TSK-52,Status transition,To Do,Done,tutoring flow tests were added and pytest passed locally,No impact - completes US-J testing evidence,Kerem Ataç,,PR link later
+2026-05-12 00:20,Sprint 2,TSK-53,Status transition,To Do,Done,score_logs table already exists from initial Supabase schema,No impact - supports objective scoring persistence,Kerem Ataç,,PR link later
+2026-05-12 00:30,Sprint 2,TSK-54,Status transition,To Do,Done,achieved_objectives are tracked in student_progress for each student activity,No impact - US-K on track,Kerem Ataç,,PR link later
+2026-05-12 00:40,Sprint 2,TSK-55,Status transition,To Do,Done,tutorStep now adds +1 when a new objective is first achieved,No impact - verifies first-time scoring rule,Kerem Ataç,,PR link later
+2026-05-12 00:50,Sprint 2,TSK-56,Status transition,To Do,Done,duplicate scoring is prevented by checking achieved_objectives before adding score,No impact - verifies no duplicate points rule,Kerem Ataç,,PR link later
+2026-05-12 01:00,Sprint 2,TSK-57,Status transition,To Do,Done,mini-lesson response is added immediately after an objective earns a point,No impact - verifies mini-lesson behavior,Kerem Ataç,,PR link later
+2026-05-12 01:10,Sprint 2,TSK-58,Status transition,To Do,Done,completion celebration is returned when all objectives are achieved,No impact - verifies completion behavior,Kerem Ataç,,PR link later
+2026-05-12 01:20,Sprint 2,TSK-59,Status transition,To Do,Done,objective scoring duplicate and completion tests were added and pytest passed locally,No impact - completes US-K testing evidence,Kerem Ataç,,PR link later

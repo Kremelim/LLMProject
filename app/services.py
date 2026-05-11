@@ -10,6 +10,7 @@ from psycopg.rows import dict_row
 from psycopg.types.json import Jsonb
 
 import json
+import re
 
 load_dotenv()
 
@@ -318,6 +319,70 @@ def _build_guiding_question(activity_text: str, step_number: int) -> str:
     index = min(step_number, len(questions) - 1)
     return questions[index]
 
+def _normalize_objectives(objectives):
+    if objectives is None:
+        return []
+
+    if isinstance(objectives, list):
+        return objectives
+
+    if isinstance(objectives, str):
+        try:
+            parsed = json.loads(objectives)
+            return parsed if isinstance(parsed, list) else []
+        except json.JSONDecodeError:
+            return []
+
+    return []
+
+
+def _objective_keywords(objective: str) -> set[str]:
+    stop_words = {
+        "the", "a", "an", "and", "or", "to", "of", "in", "on", "for", "with",
+        "why", "how", "what", "is", "are", "be", "can", "should", "explain",
+        "describe", "define", "identify", "understand"
+    }
+
+    words = re.findall(r"[a-zA-Z]{4,}", objective.lower())
+    return {word for word in words if word not in stop_words}
+
+
+def _answer_matches_objective(answer: str, objective: str) -> bool:
+    if not answer or not answer.strip():
+        return False
+
+    answer_words = set(re.findall(r"[a-zA-Z]{4,}", answer.lower()))
+    objective_words = _objective_keywords(objective)
+
+    if not objective_words:
+        return False
+
+    matches = answer_words.intersection(objective_words)
+
+    if len(objective_words) <= 2:
+        return len(matches) >= 1
+
+    return len(matches) >= 2
+
+
+def _find_newly_achieved_objective(student_answer: str, objectives: list[str], achieved_objectives: list[str]) -> str | None:
+    achieved_set = set(achieved_objectives)
+
+    for objective in objectives:
+        if objective in achieved_set:
+            continue
+
+        if _answer_matches_objective(student_answer, objective):
+            return objective
+
+    return None
+
+
+def _mini_lesson_for_objective(objective: str) -> str:
+    return (
+        "Mini-lesson: Good work. In software systems, this idea matters because "
+        "security and correctness must be enforced by reliable backend logic, not only by user interface behavior."
+    )
 
 def tutorStep(
     email: str,
@@ -334,7 +399,7 @@ def tutorStep(
             with conn.cursor() as cur:
                 cur.execute(
                     """
-                    select course_id, activity_no, activity_text, status
+                    select course_id, activity_no, activity_text, learning_objectives, status
                     from public.activities
                     where course_id = %s
                       and activity_no = %s
@@ -357,7 +422,7 @@ def tutorStep(
 
                 cur.execute(
                     """
-                    select id, conversation_history, current_score, completed
+                    select id, conversation_history, achieved_objectives, current_score, completed
                     from public.student_progress
                     where student_email = %s
                       and course_id = %s
@@ -371,41 +436,100 @@ def tutorStep(
                     cur.execute(
                         """
                         insert into public.student_progress
-                            (student_email, course_id, activity_no, conversation_history, current_score, completed)
+                            (student_email, course_id, activity_no, achieved_objectives, conversation_history, current_score, completed)
                         values
-                            (%s, %s, %s, %s, 0, false)
-                        returning id, conversation_history, current_score, completed
+                            (%s, %s, %s, %s, %s, 0, false)
+                        returning id, achieved_objectives, conversation_history, current_score, completed
                         """,
                         (
                             student["email"],
                             course_id,
                             activity_no,
                             Jsonb([]),
+                            Jsonb([]),
                         ),
                     )
                     progress = cur.fetchone()
 
                 history = _normalize_history(progress["conversation_history"])
+                objectives = _normalize_objectives(activity["learning_objectives"])
+                achieved_objectives = _normalize_objectives(progress["achieved_objectives"])
+                current_score = float(progress["current_score"] or 0)
+                score_delta = 0
+                score_log = None
+                mini_lesson = None
+                completed = bool(progress["completed"])
 
                 if student_answer and student_answer.strip():
+                    clean_answer = student_answer.strip()
+
                     history.append({
                         "role": "student",
-                        "content": student_answer.strip(),
+                        "content": clean_answer,
                     })
 
-                step_number = len([item for item in history if item.get("role") == "assistant"])
-                question = _build_guiding_question(activity["activity_text"], step_number)
+                    newly_achieved = _find_newly_achieved_objective(
+                        clean_answer,
+                        objectives,
+                        achieved_objectives,
+                    )
 
-                if not history:
+                    if newly_achieved:
+                        achieved_objectives.append(newly_achieved)
+                        score_delta = 1
+                        current_score += 1
+                        mini_lesson = _mini_lesson_for_objective(newly_achieved)
+
+                        cur.execute(
+                            """
+                            insert into public.score_logs
+                                (student_email, course_id, activity_no, score_delta, new_total_score, event_type, meta)
+                            values
+                                (%s, %s, %s, %s, %s, %s, %s)
+                            returning id, student_email, course_id, activity_no, score_delta, new_total_score, event_type, meta, created_at
+                            """,
+                            (
+                                student["email"],
+                                course_id,
+                                activity_no,
+                                score_delta,
+                                current_score,
+                                "OBJECTIVE",
+                                f"Objective achieved through tutoring response. Objective index: {len(achieved_objectives)}",
+                            ),
+                        )
+                        score_log = cur.fetchone()
+
+                    completed = bool(objectives) and len(achieved_objectives) >= len(objectives)
+
+                step_number = len([item for item in history if item.get("role") == "assistant"])
+
+                if completed:
                     assistant_message = (
-                        f"Activity: {activity['activity_text']}\n\n"
-                        f"Question: {question}"
+                        f"Updated score: {current_score}\n\n"
+                        "Congratulations! You have completed all parts of this activity. "
+                        "The tutoring flow is now complete."
                     )
+                    question = None
                 else:
-                    assistant_message = (
-                        "Thank you. Let's continue step by step.\n\n"
-                        f"Question: {question}"
-                    )
+                    question = _build_guiding_question(activity["activity_text"], step_number)
+
+                    if not history:
+                        assistant_message = (
+                            f"Activity: {activity['activity_text']}\n\n"
+                            f"Question: {question}"
+                        )
+                    elif score_delta == 1:
+                        assistant_message = (
+                            f"Updated score: {current_score}\n\n"
+                            f"{mini_lesson}\n\n"
+                            f"Question: {question}"
+                        )
+                    else:
+                        assistant_message = (
+                            "Thank you. Let's continue step by step.\n\n"
+                            f"Question: {question}"
+                        )
 
                 history.append({
                     "role": "assistant",
@@ -415,13 +539,19 @@ def tutorStep(
                 cur.execute(
                     """
                     update public.student_progress
-                    set conversation_history = %s,
+                    set achieved_objectives = %s,
+                        conversation_history = %s,
+                        current_score = %s,
+                        completed = %s,
                         updated_at = now()
                     where id = %s
-                    returning id, student_email, course_id, activity_no, conversation_history, current_score, completed, updated_at
+                    returning id, student_email, course_id, activity_no, achieved_objectives, conversation_history, current_score, completed, updated_at
                     """,
                     (
+                        Jsonb(achieved_objectives),
                         Jsonb(history),
+                        current_score,
+                        completed,
                         progress["id"],
                     ),
                 )
@@ -432,6 +562,10 @@ def tutorStep(
         return _success(
             message=assistant_message,
             question=question,
+            score_delta=score_delta,
+            current_score=current_score,
+            completed=completed,
+            score_log=score_log,
             progress=updated_progress,
         )
 
@@ -439,7 +573,6 @@ def tutorStep(
         return _error(str(exc))
     except ValueError as exc:
         return _error(str(exc))
-
 
 def logScore(email: str, password: str, course_id: str, activity_no: int, score: float, meta: str | None = None) -> dict:
     try:
