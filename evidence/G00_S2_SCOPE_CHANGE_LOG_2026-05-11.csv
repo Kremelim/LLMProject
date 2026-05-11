@@ -24,3 +24,7 @@
 2026-05-12 01:00,Sprint 2,TSK-57,Status transition,To Do,Done,mini-lesson response is added immediately after an objective earns a point,No impact - verifies mini-lesson behavior,Kerem Ataç,,PR link later
 2026-05-12 01:10,Sprint 2,TSK-58,Status transition,To Do,Done,completion celebration is returned when all objectives are achieved,No impact - verifies completion behavior,Kerem Ataç,,PR link later
 2026-05-12 01:20,Sprint 2,TSK-59,Status transition,To Do,Done,objective scoring duplicate and completion tests were added and pytest passed locally,No impact - completes US-K testing evidence,Kerem Ataç,,PR link later
+2026-05-12 01:40,Sprint 2,TSK-60,Status transition,To Do,Done,manualGrade() helper was implemented for instructor-entered exception grades,No impact - US-L on track,Kerem Ataç,,PR link later
+2026-05-12 01:50,Sprint 2,TSK-61,Status transition,To Do,Done,manualGrade() now writes score_logs entries with event_type MANUAL,No impact - verifies manual grading event logging,Kerem Ataç,,PR link later
+2026-05-12 02:00,Sprint 2,TSK-62,Status transition,To Do,Done,manualGrade() enforces instructor authentication course authorization and student enrollment checks,No impact - verifies instructor authorization rule,Kerem Ataç,,PR link later
+2026-05-12 02:10,Sprint 2,TSK-63,Status transition,To Do,Done,manual grading success unauthorized and route tests were added and pytest passed locally,No impact - completes US-L acceptance testing,Kerem Ataç,,PR link later

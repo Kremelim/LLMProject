@@ -43,6 +43,14 @@ class TutorStepRequest(BaseModel):
     activity_no: int
     student_answer: str | None = None
 
+class ManualGradeRequest(BaseModel):
+    email: str
+    password: str
+    course_id: str
+    activity_no: int
+    student_email: str
+    score: float
+    meta: str | None = None
 
 @app.get("/")
 def root() -> dict:
@@ -135,4 +143,16 @@ def student_tutor_step(payload: TutorStepRequest) -> dict:
         payload.course_id,
         payload.activity_no,
         payload.student_answer,
+    )
+
+@app.post("/instructor/manual-grade")
+def instructor_manual_grade(payload: ManualGradeRequest) -> dict:
+    return services.manualGrade(
+        payload.email,
+        payload.password,
+        payload.course_id,
+        payload.activity_no,
+        payload.student_email,
+        payload.score,
+        payload.meta,
     )

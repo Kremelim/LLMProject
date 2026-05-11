@@ -11,6 +11,7 @@ from psycopg.types.json import Jsonb
 
 import json
 import re
+import time
 
 load_dotenv()
 
@@ -33,12 +34,21 @@ def _get_database_url() -> str:
 
 
 def _connect():
-    return psycopg.connect(
-        _get_database_url(),
-        row_factory=dict_row,
-        connect_timeout=5,
-    )
+    last_error = None
 
+    for attempt in range(3):
+        try:
+            return psycopg.connect(
+                _get_database_url(),
+                row_factory=dict_row,
+                connect_timeout=10,
+                prepare_threshold=None,
+            )
+        except psycopg.OperationalError as exc:
+            last_error = exc
+            time.sleep(1 + attempt)
+
+    raise last_error
 
 def _normalize_email(email: str) -> str:
     return email.strip().lower()
@@ -83,7 +93,8 @@ def _verify_password(password: str, stored_hash: str | None) -> bool:
 def _get_user(email: str) -> dict | None:
     normalized_email = _normalize_email(email)
 
-    with _connect() as conn:
+    conn = _connect()
+    try:
         with conn.cursor() as cur:
             cur.execute(
                 """
@@ -94,7 +105,8 @@ def _get_user(email: str) -> dict | None:
                 (normalized_email,),
             )
             return cur.fetchone()
-
+    finally:
+        conn.close()
 
 def _set_password_for_role(email: str, password: str | None, expected_role: str) -> dict:
     if not email or not email.strip():
@@ -212,7 +224,8 @@ def require_student(email: str, password: str) -> dict:
 def require_course_access(email: str, course_id: str, role: str) -> bool:
     normalized_email = _normalize_email(email)
 
-    with _connect() as conn:
+    conn = _connect()
+    try:
         with conn.cursor() as cur:
             cur.execute(
                 """
@@ -226,6 +239,8 @@ def require_course_access(email: str, course_id: str, role: str) -> bool:
                 (normalized_email, course_id, role),
             )
             row = cur.fetchone()
+    finally:
+        conn.close()
 
     if not row:
         raise PermissionError("Course access denied")
@@ -917,6 +932,140 @@ def endActivity(email: str, password: str, course_id: str, activity_no: int) -> 
             conn.commit()
 
         return _success(activity=activity)
+
+    except PermissionError as exc:
+        return _error(str(exc))
+    except ValueError as exc:
+        return _error(str(exc))
+
+def manualGrade(
+    email: str,
+    password: str,
+    course_id: str,
+    activity_no: int,
+    student_email: str,
+    score: float,
+    meta: str | None = None
+) -> dict:
+    try:
+        instructor = require_instructor(email, password)
+        require_course_access(instructor["email"], course_id, "instructor")
+
+        normalized_student_email = _normalize_email(student_email)
+
+        if not normalized_student_email:
+            return _error("Student email is required")
+
+        if score == 0:
+            return _error("Manual grade score cannot be zero")
+
+        with _connect() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    select status
+                    from public.activities
+                    where course_id = %s
+                      and activity_no = %s
+                    """,
+                    (course_id, activity_no),
+                )
+                activity = cur.fetchone()
+
+                if not activity:
+                    return _error("Activity not found")
+
+                if activity["status"] == "ENDED":
+                    return _error("Cannot manually grade an ENDED activity")
+
+                cur.execute(
+                    """
+                    select 1
+                    from public.course_enrollments
+                    where lower(user_email) = %s
+                      and course_id = %s
+                      and role = 'student'
+                    limit 1
+                    """,
+                    (normalized_student_email, course_id),
+                )
+                enrolled_student = cur.fetchone()
+
+                if not enrolled_student:
+                    return _error("Student is not enrolled in this course")
+
+                cur.execute(
+                    """
+                    select id, current_score
+                    from public.student_progress
+                    where student_email = %s
+                      and course_id = %s
+                      and activity_no = %s
+                    """,
+                    (normalized_student_email, course_id, activity_no),
+                )
+                progress = cur.fetchone()
+
+                if not progress:
+                    cur.execute(
+                        """
+                        insert into public.student_progress
+                            (student_email, course_id, activity_no, achieved_objectives, conversation_history, current_score, completed)
+                        values
+                            (%s, %s, %s, %s, %s, 0, false)
+                        returning id, current_score
+                        """,
+                        (
+                            normalized_student_email,
+                            course_id,
+                            activity_no,
+                            Jsonb([]),
+                            Jsonb([]),
+                        ),
+                    )
+                    progress = cur.fetchone()
+
+                current_score = float(progress["current_score"] or 0)
+                new_total_score = current_score + float(score)
+
+                cur.execute(
+                    """
+                    update public.student_progress
+                    set current_score = %s,
+                        updated_at = now()
+                    where id = %s
+                    returning id, student_email, course_id, activity_no, current_score, completed, updated_at
+                    """,
+                    (new_total_score, progress["id"]),
+                )
+                updated_progress = cur.fetchone()
+
+                cur.execute(
+                    """
+                    insert into public.score_logs
+                        (student_email, course_id, activity_no, score_delta, new_total_score, event_type, meta)
+                    values
+                        (%s, %s, %s, %s, %s, %s, %s)
+                    returning id, student_email, course_id, activity_no, score_delta, new_total_score, event_type, meta, created_at
+                    """,
+                    (
+                        normalized_student_email,
+                        course_id,
+                        activity_no,
+                        float(score),
+                        new_total_score,
+                        "MANUAL",
+                        meta or "Manual grade entered by instructor",
+                    ),
+                )
+                score_log = cur.fetchone()
+
+            conn.commit()
+
+        return _success(
+            score_log=score_log,
+            progress=updated_progress,
+        )
 
     except PermissionError as exc:
         return _error(str(exc))
