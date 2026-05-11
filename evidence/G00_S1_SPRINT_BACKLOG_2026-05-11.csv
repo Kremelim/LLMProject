@@ -1,0 +1,30 @@
+﻿Task ID,Story ID,Task Description,Owner,SP,Status,Branch Name,PR Link,Notes
+SETUP-01,SETUP,Create required repository structure,Kerem Ataç,1,Done,chore/project-setup,,app tests instructor_tests evidence created
+SETUP-02,SETUP,Add requirements gitignore env example and README,Kerem Ataç,1,Done,chore/project-setup,,Initial project files added
+SETUP-03,SETUP,Add FastAPI app smoke endpoint,Kerem Ataç,1,Done,chore/project-setup,,app/main.py created
+SETUP-04,SETUP,Add required service function signatures,Kerem Ataç,1,Done,chore/project-setup,,app/services.py skeleton created
+SETUP-05,SETUP,Add smoke tests,Kerem Ataç,1,Done,chore/project-setup,,tests/test_smoke.py added
+DB-01,US-C,Create Supabase PostgreSQL schema,Kerem Ataç,2,Done,chore/project-setup,,users courses enrollments activities progress score_logs
+US-A-01,US-A,Implement setInstructorPassword,Kerem Ataç,1,To Do,feature/US-A-instructor-auth,,
+US-A-02,US-A,Implement instructorLogin,Kerem Ataç,1,To Do,feature/US-A-instructor-auth,,
+US-A-03,US-A,Write instructor auth tests,Kerem Ataç,1,To Do,feature/US-A-instructor-auth,,
+US-B-01,US-B,Implement setStudentPassword,Kerem Ataç,1,To Do,feature/US-B-student-auth,,
+US-B-02,US-B,Implement studentLogin,Kerem Ataç,1,To Do,feature/US-B-student-auth,,
+US-B-03,US-B,Write student auth tests,Kerem Ataç,1,To Do,feature/US-B-student-auth,,
+US-C-01,US-C,Implement credential validation helper,Kerem Ataç,1,To Do,feature/US-C-authorization,,
+US-C-02,US-C,Implement role authorization helper,Kerem Ataç,1,To Do,feature/US-C-authorization,,
+US-C-03,US-C,Implement course access authorization helper,Kerem Ataç,1,To Do,feature/US-C-authorization,,
+US-C-04,US-C,Write unauthorized access tests,Kerem Ataç,2,To Do,feature/US-C-authorization,,
+US-D-01,US-D,Implement listMyCourses,Kerem Ataç,2,To Do,feature/US-D-list-courses,,
+US-D-02,US-D,Test assigned courses only,Kerem Ataç,1,To Do,feature/US-D-list-courses,,
+US-E-01,US-E,Implement listActivities,Kerem Ataç,2,To Do,feature/US-E-list-activities,,
+US-E-02,US-E,Test deterministic activity listing,Kerem Ataç,1,To Do,feature/US-E-list-activities,,
+US-F-01,US-F,Implement createActivity,Kerem Ataç,2,To Do,feature/US-F-create-activity,,
+US-F-02,US-F,Validate required fields and duplicates,Kerem Ataç,2,To Do,feature/US-F-create-activity,,
+US-F-03,US-F,Write create activity tests,Kerem Ataç,1,To Do,feature/US-F-create-activity,,
+US-H-01,US-H,Implement startActivity,Kerem Ataç,2,To Do,feature/US-H-activity-state,,
+US-H-02,US-H,Implement endActivity,Kerem Ataç,2,To Do,feature/US-H-activity-state,,
+US-H-03,US-H,Test ENDED activity blocks score logging,Kerem Ataç,1,To Do,feature/US-H-activity-state,,
+US-I-01,US-I,Implement getActivity active-only access,Kerem Ataç,2,To Do,feature/US-I-active-access,,
+US-I-02,US-I,Hide learning objectives from student response,Kerem Ataç,1,To Do,feature/US-I-active-access,,
+US-I-03,US-I,Test NOT_STARTED ACTIVE ENDED and unauthorized access,Kerem Ataç,2,To Do,feature/US-I-active-access,,

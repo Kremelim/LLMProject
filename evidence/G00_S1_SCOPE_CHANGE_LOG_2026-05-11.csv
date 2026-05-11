@@ -1,0 +1,10 @@
+﻿Timestamp,Sprint,Item ID,Change Type,From State,To State,Reason,Impact on Sprint Goal,Decision Owner,ClickUp Link,GitHub Link
+2026-05-11 10:00,Sprint 1,CLICKUP-SETUP,Task add,,Backlog,Created ClickUp board columns and added product backlog stories,No impact - establishes Sprint 1 process foundation,Kerem Ataç,,
+2026-05-11 10:20,Sprint 1,SETUP-01,Task add,,To Do,Added project scaffold task to track repository setup,No impact - required setup work,Kerem Ataç,,
+2026-05-11 10:35,Sprint 1,SETUP-01,Status transition,To Do,Done,Required repository folders were created,No impact - on track,Kerem Ataç,,
+2026-05-11 10:45,Sprint 1,SETUP-02,Status transition,To Do,Done,requirements.txt .gitignore .env.example and README were created,No impact - on track,Kerem Ataç,,
+2026-05-11 11:00,Sprint 1,SETUP-03,Status transition,To Do,Done,Initial FastAPI app was added in app/main.py,No impact - on track,Kerem Ataç,,
+2026-05-11 11:10,Sprint 1,SETUP-04,Status transition,To Do,Done,Required service function signatures were added in app/services.py,No impact - prevents API signature mismatch risk,Kerem Ataç,,
+2026-05-11 11:20,Sprint 1,SETUP-05,Status transition,To Do,Done,Smoke test was added under tests/,No impact - confirms initial import structure,Kerem Ataç,,
+2026-05-11 11:40,Sprint 1,DB-01,Status transition,To Do,Done,Supabase PostgreSQL schema and seed data were created,No impact - supports Sprint 1 auth and authorization stories,Kerem Ataç,,
+2026-05-11 12:00,Sprint 1,E11,Status transition,To Do,Done,Sprint 1 baseline board screenshot was captured,No impact - required board evidence saved,Kerem Ataç,,

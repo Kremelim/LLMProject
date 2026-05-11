@@ -1,0 +1,14 @@
+﻿Story ID,Story Summary,Initial SP,Re-estimated SP S1,Re-estimated SP S2,Priority,Notes
+US-A,Instructor Google Sign-In / equivalent auth,3,3,,1,Implemented as email/password backend verification for project API
+US-B,Student Google Sign-In / equivalent auth,3,3,,2,Implemented as email/password backend verification for project API
+US-C,Map authenticated users to roles and course access,5,5,,3,Server-side authorization required
+US-D,Instructor lists only assigned courses,3,3,,4,
+US-E,Instructor lists activities in a course,3,3,,5,
+US-F,Instructor creates activity with text and objectives,5,5,,6,
+US-G,Instructor updates activity text and objectives,5,,,7,Moved to Sprint 2
+US-H,Instructor starts and ends activity,5,5,,8,ACTIVE / ENDED state
+US-I,Student accesses activity only when ACTIVE,5,5,,9,Never expose objectives
+US-J,Student tutoring flow one question at a time,8,,,10,Sprint 2 LLM integration
+US-K,Objective-based scoring plus mini-lesson plus celebrate,8,,,11,Sprint 2 scoring logic
+US-L,Instructor manual grading for exceptions,5,,,12,Sprint 2
+US-M,Instructor resets activity and deletes all scores,5,,,13,Sprint 2
