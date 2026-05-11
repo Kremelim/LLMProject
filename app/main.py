@@ -90,3 +90,13 @@ def instructor_end_activity(payload: ActivityStateRequest) -> dict:
         payload.course_id,
         payload.activity_no,
     )
+
+
+@app.post("/student/activity/get")
+def student_get_activity(payload: ActivityStateRequest) -> dict:
+    return services.getActivity(
+        payload.email,
+        payload.password,
+        payload.course_id,
+        payload.activity_no,
+    )
