@@ -12,3 +12,5 @@
 2026-05-11 14:15,Sprint 1,TSK-02,Status transition,To Do,Done,instructor seed users were added to the users table,No impact - required foundation for instructor authentication testing,Kerem Ataç,,PR link later
 2026-05-11 14:30,Sprint 1,TSK-03,Status transition,To Do,Done,Password hashing/checking implemented and manually verified,No impact - supports US-A,Kerem Ataç,,PR link later
 2026-05-11 14:40,Sprint 1,TSK-04,Status transition,To Do,Done,instructorLogin implemented and manually verified,No impact - US-A on track,Kerem Ataç,,PR link later
+2026-05-11 15:10,Sprint 1,TSK-05,Status transition,To Do,Done,/instructor/login FastAPI route was added and connected to instructorLogin(),No impact - completes instructor login endpoint for US-A,Kerem Ataç,,PR link later
+2026-05-11 15:20,Sprint 1,TSK-06,Status transition,To Do,Done,instructor login tests were added and pytest passed locally,No impact - verifies US-A instructor authentication behavior,Kerem Ataç,,PR link later
