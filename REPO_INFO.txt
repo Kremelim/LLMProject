@@ -1,0 +1,4 @@
+﻿GitHub Repository URL: https://github.com/kremelim/LLMProject
+Default Branch: main
+Sprint 1 Tag: sprint-1
+Sprint 2 Tag: sprint-2
